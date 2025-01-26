@@ -34,6 +34,6 @@ router.put('/update-profile', (req, res, next) => __awaiter(void 0, void 0, void
 router.get("/check", (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     yield (0, auth_middleware_1.protectRoute)(req, res, next);
 }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    (0, auth_controller_1.checkRoute)(req, res);
+    yield (0, auth_controller_1.checkRoute)(req, res);
 }));
 exports.default = router;

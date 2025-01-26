@@ -32,7 +32,7 @@ router.get("/check" ,
     await protectRoute(req as CustomRequest , res , next);
     } , 
     async (req,res)=>{
-        checkRoute(req as Request,res);
+        await checkRoute(req as Request,res);
 })
 
 export default router;
