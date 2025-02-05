@@ -17,8 +17,9 @@ const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const user_model_1 = __importDefault(require("../models/user.model"));
 const protectRoute = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const token = req.cookies.jwt;
+        const token = yield req.cookies.jwt;
         if (!token) {
+            console.log("No Token Provided !");
             return res.status(401).json({
                 msg: "No Token Provided !"
             });

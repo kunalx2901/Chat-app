@@ -1,8 +1,8 @@
 
-function Settingpage() {
+function SettingPage() {
   return (
-    <div>Settingpage</div>
+    <div>SettingPage</div>
   )
 }
 
-export default Settingpage
+export default SettingPage

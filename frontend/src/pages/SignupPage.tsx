@@ -1,7 +1,10 @@
+import { Auth } from '../components/Auth';
 
 function SignupPage() {
   return (
-    <div>SignupPage</div>
+    <div>
+      <Auth type="signup"/>
+    </div>
   )
 }
 

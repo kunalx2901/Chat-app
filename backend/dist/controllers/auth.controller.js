@@ -32,14 +32,20 @@ const signup = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         }
         else {
             const hashedPassword = yield bcryptjs_1.default.hash(password, 10);
-            const newUser = new user_model_1.default({
+            const newUser = yield new user_model_1.default({
                 fullname: fullname,
                 email: email,
                 password: hashedPassword,
             });
             if (newUser) {
                 // generate jwt token 
-                (0, util_1.generateToken)({ userId: newUser._id.toString(), res: res });
+                try {
+                    const jwt = yield (0, util_1.generateToken)({ userId: newUser._id.toString(), res: res });
+                    console.log("jwt token generated : " + jwt);
+                }
+                catch (error) {
+                    console.log("error in generating token " + error);
+                }
                 yield newUser.save();
                 res.status(201).json({
                     id: newUser._id,

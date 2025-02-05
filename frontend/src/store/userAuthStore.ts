@@ -18,11 +18,12 @@ export const userAuthStore = create <UserAuthStore>((set)=>{
 
         checkAuth:async()=>{
             try {
-                const res = await axiosInstance.get('/check');
+                const res = await axiosInstance.get('/auth/check');
                 set({authUser:res.data})
+                // console.log(res.data);
             } catch (error) {
                 set({authUser:null})
-                console.log("error in checkAuth controller "+ error);   
+                console.log("error in checkAuth controller in frontend "+ error);   
             } finally{
                 set({isCheckingAuth:false})
             }

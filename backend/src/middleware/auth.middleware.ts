@@ -9,9 +9,10 @@ export interface CustomRequest extends Request {
 export const protectRoute = async(req:CustomRequest , res:Response , next:Function)=>{
     
     try {
-        const token = req.cookies.jwt;
+        const token = await req.cookies.jwt;
 
     if(!token){
+        console.log("No Token Provided !");
         return res.status(401).json({
             msg:"No Token Provided !"
         })
@@ -20,7 +21,7 @@ export const protectRoute = async(req:CustomRequest , res:Response , next:Functi
     if(!process.env.JWT_SECRET){
         throw new Error('JWT_SECRET is not defined');
     }
-
+    
     const decoded = await jwt.verify(token , process.env.JWT_SECRET) as JwtPayload;
 
     if(!decoded){

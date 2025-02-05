@@ -31,24 +31,29 @@ export const signup = async(req:Request,res:Response)=>{
           }
           else{
                const hashedPassword = await bcrypt.hash(password , 10);
-               const newUser = new User({
+               const newUser = await new User({
                     fullname:fullname,
                     email:email,
                     password:hashedPassword,
-
                })
 
                if(newUser){
                     // generate jwt token 
-                    generateToken({userId:newUser._id.toString() , res:res});
+                   try {
+                    const jwt = await generateToken({userId:newUser._id.toString() , res:res});
+                    console.log("jwt token generated : " + jwt);
+                   } catch (error) {
+                    console.log("error in generating token "+ error); 
+                   }
                     await newUser.save();
-
+                    
                     res.status(201).json({
                          id:newUser._id,
                          fullname:newUser.fullname,
                          email:newUser.email,
-                         profileImage:newUser.profileImage
+                         profileImage:newUser.profileImage       
                     })
+                    
 
                }
                else{

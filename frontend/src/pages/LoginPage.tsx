@@ -1,7 +1,10 @@
-
+import {Auth} from '../components/Auth'
 function LoginPage() {
   return (
-    <div>LoginPage</div>
+    <div>
+      <Auth type="login"/>
+
+    </div>
   )
 }
 
