@@ -6,41 +6,41 @@ export interface CustomRequest extends Request {
     user: object
   }
 
-export const protectRoute = async(req:CustomRequest , res:Response , next:Function)=>{
+  export const protectRoute = async(req:CustomRequest , res:Response , next:Function)=>{
     
+      console.log("req cookie value "+req.cookies.jwt);
     try {
-        const token = await req.cookies.jwt;
+        const token = req.cookies.jwt;
 
-    if(!token){
-        console.log("No Token Provided !");
-        return res.status(401).json({
-            msg:"No Token Provided !"
-        })
-    }
+       
+        if (!token) {
+            return res.status(401).json({ msg: "No token provided!" });
+          } 
+        
 
-    if(!process.env.JWT_SECRET){
-        throw new Error('JWT_SECRET is not defined');
-    }
-    
-    const decoded = await jwt.verify(token , process.env.JWT_SECRET) as JwtPayload;
+        if(!process.env.JWT_SECRET){
+            throw new Error('JWT_SECRET is not defined');
+        }
+        
+        const decoded = await jwt.verify(token , process.env.JWT_SECRET) as JwtPayload;
 
-    if(!decoded){
-        return res.status(401).json({
-            msg:"Invalid Token !"
-        })
-    }
+        if(!decoded){
+            return res.status(401).json({
+                msg:"Invalid Token !"
+            })
+        }
 
-    const user = await User.findById(decoded.userId).select("-password");
+        const user = await User.findById(decoded.userId).select("-password");
 
-    if(!user){
-        return res.status(401).json({
-            msg:"User does not exist! "
-        })
-    }
+        if(!user){
+            return res.status(401).json({
+                msg:"User does not exist! "
+            })
+        }
 
-    req.user = user;
+        req.user = user;
 
-    next();
+        next();
 
     } catch (error) {
         console.log("Error Occured Due to "+ error );

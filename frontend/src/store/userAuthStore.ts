@@ -1,5 +1,6 @@
 import {create} from 'zustand'
 import { axiosInstance } from '../lib/axios'
+import toast from 'react-hot-toast';
 
 interface UserAuthStore {
     checkAuth: ()=>void;
@@ -19,11 +20,13 @@ export const userAuthStore = create <UserAuthStore>((set)=>{
         checkAuth:async()=>{
             try {
                 const res = await axiosInstance.get('/auth/check');
-                set({authUser:res.data})
-                // console.log(res.data);
+                toast.success("Successfully logged in");
+                set({authUser:res})
+                console.log(res);
             } catch (error) {
                 set({authUser:null})
-                console.log("error in checkAuth controller in frontend "+ error);   
+                console.log("error in checkAuth controller in frontend "+ error);  
+                toast.error("Something went wrong"); 
             } finally{
                 set({isCheckingAuth:false})
             }

@@ -1,12 +1,13 @@
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import { axiosInstance } from "../lib/axios";
 import { useNavigate } from "react-router-dom";
 import viewPass from "../assets/view.png";
 import hidePass from "../assets/hide.png";
-import { toast, ToastContainer } from "react-toastify";
+import { toast, Toaster} from "react-hot-toast";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import Tag from "./Tag";
 
 interface UserInput {
   email: string;
@@ -34,55 +35,43 @@ export const Auth = ({ type }: { type: string }) => {
     password: "",
   });
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<AuthForm>({
-    resolver: zodResolver(authSchema),
-  });
-
-  
+ 
   async function sendRequest() {
       try {
-          const response = await axiosInstance.post(
-              `/auth/${type == "signup" ? "signup" : "login"}`,
-              userInput
-            );
 
-            useEffect(() => {
-              toast.success('Hello, world!');
-            }, [sendRequest]);
+        if(userInput.email.length == 0 || userInput.password.length == 0){
+          return toast.error("Please fill in all fields");
+        }
+        if(type == "signup" && userInput.fullname.length == 0){
+          return toast.error("Please fill in all fields");
+        }
+        if(userInput.password.length < 6){
+          return toast.error("Password must be at least 6 characters");
+        }
+        if(!/\S+@\S+\.\S+/.test(userInput.email)){
+          return toast.error("Invalid email format");
+        }
+
+      const response = await axiosInstance.post(
+        `/auth/${type == "signup" ? "signup" : "login"}`,
+        userInput
+      );
       // console.log(response.data);
-            
-            setTimeout(() => {
-                navigate("/");
-            }, 2000);
+      
+        navigate("/");
+          
+      return response.data;
     } catch (error) {
       console.log(error);
-      toast(
-        type == "signup" ? "Account creation failed" : "Login failed"
-      );
+      toast.error("Something went wrong ❌");
     }
   }
 
   return (
-    <div>
+    <div className="lg:grid grid-cols-2 place-items-center min-h-screen relative">
       {/* <div className="text-xl ">{JSON.stringify(userInput)}</div> */}
-      <ToastContainer
-        position="top-right"
-        autoClose={2000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light"
-      />
-        
-      <div className="flex min-h-full flex-col justify-center px-10 py-30 lg:py-[9vw] lg:px-8 ">
+      <Toaster position="top-center"/>
+      <div className="flex min-h-full w-full flex-col justify-center px-10 py-45 lg:py-[9vw] lg:px-8 lg:scale-115">
         <div className="sm:mx-auto sm:w-full sm:max-w-sm px-8 py-14 shadow-xl shadow-stone-600 rounded-xl font-bold border-1 border-gray-300">
           <div className="sm:mx-auto sm:w-full sm:max-w-sm py-2 lg:text-xl text-lg">
             {type == "signup" ? (
@@ -163,7 +152,7 @@ export const Auth = ({ type }: { type: string }) => {
                   <button
                     type="button"
                     onClick={() => setViewPassword(!viewPassword)}
-                    className="relative w-4 bottom-12.5 lg:left-73 left-50 cursor-pointer overflow-hidden"
+                    className="relative w-4 bottom-6.5 lg:left-73 left-49 cursor-pointer overflow-hidden"
                   >
                     {viewPassword ? (
                       <img src={viewPass} alt="" />
@@ -174,12 +163,15 @@ export const Auth = ({ type }: { type: string }) => {
                 </div>
               </div>
 
-              <div className="flex items-center justify-center lg:mt-[-13px] mt-[-20px]">
+              <div className="flex items-center justify-center mt-[-2.5vw] lg:mt-[-0.3vw]">
                 <button
-                  onClick={sendRequest}
+                  onClick={()=>{
+                    sendRequest();
+                  }}
                   className="flex w-[50%] justify-center rounded-md bg-indigo-600 px-1 py-1 text-sm/6 font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 "
                 >
                   {type == "signup" ? "Sign in " : "Log in"}
+                  
                 </button>
               </div>
             </form>
@@ -195,6 +187,10 @@ export const Auth = ({ type }: { type: string }) => {
             </p>
           </div>
         </div>
+      </div>
+
+      <div className="w-full hidden lg:block">
+        <Tag/>
       </div>
     </div>
   );

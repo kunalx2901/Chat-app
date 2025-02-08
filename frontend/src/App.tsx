@@ -10,6 +10,7 @@ import ProfilePage from './pages/ProfilePage'
 import { userAuthStore } from './store/userAuthStore'
 import Loader from './components/Loader'
 import {Navigate} from 'react-router-dom' 
+import { ToastBar, Toaster } from 'react-hot-toast'
 
 
 
@@ -27,7 +28,8 @@ function App() {
   }
 
   return <div>
-    <div className='text-5xl font-bold text-green-500'>
+    <Toaster position='top-center'/>
+    <div className='font-bold '>
     <Navbar/>
   <Routes>
     <Route path='/' element={authUser ? <HomePage/> : <Navigate to='/login'/>}/>

@@ -91,7 +91,12 @@ export const login = async (req:Request,res:Response)=>{
                })
           }
 
-          generateToken({userId:user._id.toString() , res:res});
+         try {
+          await generateToken({userId:user._id.toString() , res:res});
+          console.log("jwt token generated");
+         } catch (error) {
+          console.log("error in login route "+error)
+         }
 
           res.status(200).json({
                msg:"User logged in successfully !"

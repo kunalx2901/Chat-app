@@ -16,13 +16,11 @@ exports.protectRoute = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const user_model_1 = __importDefault(require("../models/user.model"));
 const protectRoute = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log("req cookie value " + req.cookies.jwt);
     try {
-        const token = yield req.cookies.jwt;
+        const token = req.cookies.jwt;
         if (!token) {
-            console.log("No Token Provided !");
-            return res.status(401).json({
-                msg: "No Token Provided !"
-            });
+            return res.status(401).json({ msg: "No token provided!" });
         }
         if (!process.env.JWT_SECRET) {
             throw new Error('JWT_SECRET is not defined');

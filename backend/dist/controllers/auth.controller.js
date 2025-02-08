@@ -84,7 +84,13 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 msg: "Invalid Credentials !"
             });
         }
-        (0, util_1.generateToken)({ userId: user._id.toString(), res: res });
+        try {
+            yield (0, util_1.generateToken)({ userId: user._id.toString(), res: res });
+            console.log("jwt token generated");
+        }
+        catch (error) {
+            console.log("error in login route " + error);
+        }
         res.status(200).json({
             msg: "User logged in successfully !"
         });
